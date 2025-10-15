@@ -132,7 +132,7 @@
 
   <!-- Banner video -->
   <section class="banner sep-top">
-    <video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/banner.mp4"></video>
+    <video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="media/banner.mp4"></video>
     <div class="content container">
       <h1>CDL Imaging</h1>
       <p>Architectural Visualization & Flythroughs</p>
@@ -142,7 +142,7 @@
   <!-- Intro -->
   <section id="top" class="block sep-top">
     <div class="bg-wrap">
-      <video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/hero.mp4"></video>
+      <video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="media/hero.mp4"></video>
       <div class="bg-overlay"></div>
     </div>
     <div class="container">
@@ -163,7 +163,7 @@
 
   <!-- Services -->
   <section id="services" class="block sep-top">
-    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/services.mp4"></video><div class="bg-overlay"></div></div>
+    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="media/services.mp4"></video><div class="bg-overlay"></div></div>
     <div class="container">
       <h2 class="reveal">Services</h2>
       <p class="sub reveal">From schematic mood frames to production‑grade hero shots.</p>
@@ -186,7 +186,7 @@
 
   <!-- Process -->
   <section id="process" class="block sep-top">
-    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/process.mp4"></video><div class="bg-overlay"></div></div>
+    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="media/process.mp4"></video><div class="bg-overlay"></div></div>
     <div class="container">
       <h2 class="reveal">Process</h2>
       <p class="sub reveal">Transparent milestones and approvals—no surprises.</p>
@@ -201,7 +201,7 @@
 
   <!-- Work (JSON-driven) -->
   <section id="work" class="block sep-top">
-    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/work.mp4"></video><div class="bg-overlay"></div></div>
+    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="media/work.mp4"></video><div class="bg-overlay"></div></div>
     <div class="container">
       <h2 class="reveal">Selected Work</h2>
       <p class="sub reveal">Click any card to view the full image and details.</p>
@@ -310,7 +310,7 @@
       const track = document.getElementById('workTrack'); if(!track) return;
       const buildCard = (item)=>{ const card=document.createElement('article'); card.className='work-card'; card.tabIndex=0; card.setAttribute('role','button'); card.setAttribute('aria-label',`Open ${item.title||'work item'}`); const img=new Image(); img.loading='lazy'; img.alt=item.title||'Work sample'; img.src=item.image; const meta=document.createElement('div'); meta.className='meta'; const h4=document.createElement('h4'); h4.textContent=item.title||'Untitled'; const p=document.createElement('p'); p.textContent=item.description||''; meta.append(h4,p); card.append(img,meta); card.addEventListener('click',()=>openLightbox(item)); card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openLightbox(item);} }); return card; };
       const placeholders=[{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Atrium Concept', description:'Lorem ipsum dolor sit amet.'},{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Courtyard — Blue Hour', description:'Sed do eiusmod tempor.'},{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Lobby — Soft Morning', description:'Ut enim ad minim veniam.'}];
-      async function fetchJson(){ try{ const r=await fetch('/media/work.json',{cache:'no-store'}); if(!r.ok) throw 0; const d=await r.json(); if(!Array.isArray(d)||!d.length) throw 0; return d; }catch{ return placeholders; } }
+      async function fetchJson(){ try{ const r=await fetch('media/work.json',{cache:'no-store'}); if(!r.ok) throw 0; const d=await r.json(); if(!Array.isArray(d)||!d.length) throw 0; return d; }catch{ return placeholders; } }
       function render(items){ track.innerHTML=''; items.forEach(it=> track.appendChild(buildCard(it))); }
       window._workScroll=(dir)=>{ const vw=track.parentElement.clientWidth; track.scrollBy({left:dir*(vw*.8), behavior:'smooth'}); };
       const lb=document.getElementById('lightbox'), img=document.getElementById('lbImg'), t=document.getElementById('lbTitle'), d=document.getElementById('lbDesc');
@@ -456,7 +456,7 @@
       // Try to load real client data
       async function loadRealClientData() {
         try {
-          const response = await fetch('/media/clients.json', {
+          const response = await fetch('media/clients.json', {
             cache: 'no-store'
           });
           
