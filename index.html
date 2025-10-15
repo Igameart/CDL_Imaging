@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CDL Imaging — Architectural Visualization</title>
+  <meta name="description" content="Photoreal architectural visualization by CDL Imaging. Renderings that sell ideas, win approvals, and elevate brands." />
+  <style>
+    :root{ --bg:#0b0f14; --ink:#e8eef4; --muted:#aab8c7; --brand:#45d1b8; --brand-2:#6aa3ff; --line:#1e2833; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:18px; --radius-lg:28px }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 "Inter","Segoe UI",system-ui,Roboto,sans-serif; overflow-x:hidden}
+    a{color:inherit; text-decoration:none}
+    .container{width:min(1200px,92%); margin-inline:auto}
+
+    header{position:sticky; top:0; z-index:100; background:rgba(11,15,20,.85); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+    .nav{display:flex; justify-content:space-between; align-items:center; padding:14px 0}
+    .brand{display:flex; gap:12px; font-weight:700}
+    .brand-logo{width:34px; height:34px; border-radius:10px; background-image:url('/path/to/your-logo.png'); background-size:cover; background-position:center; background-repeat:no-repeat}
+    .nav-links{display:flex; gap:22px}
+    .cta{display:inline-flex; align-items:center; padding:10px 16px; border-radius:12px; background:linear-gradient(180deg,var(--brand),#39bea6); color:#0c1217; font-weight:700; box-shadow:var(--shadow); transition:.3s}
+    .cta:hover{transform:translateY(-2px)}
+
+    /* Slide‑deck blocks */
+    .block{position:relative; isolation:isolate; min-height:92vh; display:grid; align-items:center; padding-block:clamp(56px,8vh,120px); border-top:1px solid var(--line)}
+    .block .container{align-self:center}
+
+    /* Background video helpers */
+    .bg-wrap{position:absolute; inset:0; z-index:-1; overflow:hidden}
+    .bg-media{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:saturate(105%) contrast(105%) brightness(80%); will-change:transform}
+    .bg-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(11,15,20,.85), rgba(11,15,20,.65) 40%, rgba(11,15,20,.92));}
+
+    /* Banner */
+    .banner{min-height:100vh; display:grid; place-items:center; text-align:center; color:white}
+    .banner video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; will-change:transform}
+    .banner::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(7,10,14,.35),rgba(7,10,14,.75))}
+    .banner .content{position:relative; z-index:2; animation:fadeUp .9s ease forwards; opacity:0; transform:translateY(30px)}
+    .banner h1{font-size:clamp(2.6rem,5vw,4.2rem); margin:0; line-height:1.15}
+    .banner p{margin-top:12px; font-size:1.15rem; color:var(--muted)}
+
+    .sep-top{position:relative}
+    .sep-top::before{content:""; position:absolute; left:0; right:0; top:-1px; height:1px; background:linear-gradient(90deg,transparent,#1e2833 20%,#1e2833 80%,transparent)}
+
+    .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease}
+    .reveal.in{opacity:1; transform:none}
+
+    h2{font-size:clamp(1.7rem,2.2vw + .8rem,2.5rem); margin:0 0 16px}
+    .sub{color:var(--muted); margin:0 0 24px}
+
+    .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:28px}
+    .stat{background:linear-gradient(180deg,#0e151d,#0c1117); border:1px solid #162232; border-radius:16px; padding:16px; text-align:center}
+    .stat b{font-size:1.6rem}
+    .stat span{display:block; color:var(--muted); font-size:.9rem}
+
+    .cards{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
+    .card{grid-column:span 4; background:linear-gradient(180deg,#0e151d,#0c1117); border:1px solid #162232; border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+    .feature{display:flex; gap:12px; align-items:flex-start}
+    .feature svg{flex:0 0 36px}
+
+    .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+    .step{background:#0c1117; border:1px solid #162232; border-radius:var(--radius); padding:18px}
+
+    /* Work carousel */
+    .work-carousel{position:relative; margin-top:10px}
+    .work-viewport{overflow:hidden; outline:none}
+    .work-track{display:flex; gap:16px; scroll-behavior:smooth; padding-bottom:4px}
+    .work-card{flex:0 0 clamp(260px,33%,380px); background:#0c1117; border:1px solid #162232; border-radius:16px; overflow:hidden; cursor:pointer; transition:transform .25s ease}
+    .work-card:hover{transform:translateY(-2px)}
+    .work-card img{display:block; width:100%; height:220px; object-fit:cover; background:#0b1016}
+    .work-card .meta{padding:12px}
+    .work-card .meta h4{margin:0 0 6px; font-size:1rem}
+    .work-card .meta p{margin:0; color:var(--muted); font-size:.9rem}
+    .work-nav{position:absolute; inset-block:0; display:flex; align-items:center; justify-content:space-between; pointer-events:none}
+    .work-nav button{pointer-events:auto; width:40px; height:40px; border-radius:999px; border:1px solid #203145; background:rgba(12,17,23,.8); color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow)}
+    .work-nav button:hover{background:rgba(20,28,38,.9)}
+
+    /* Lightbox */
+    .lightbox{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.65); z-index:999}
+    .lightbox.open{display:flex}
+    .lightbox .panel{width:min(960px,92%); max-height:90vh; overflow:auto; background:linear-gradient(180deg,#0e151d,#0c1117); border:1px solid #162232; border-radius:18px; box-shadow:var(--shadow)}
+    .lightbox header{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid #162232}
+    .lightbox header h3{margin:0; font-size:1.1rem}
+    .lightbox .close{width:36px; height:36px; display:grid; place-items:center; border-radius:10px; border:1px solid #203145; background:#0b1016; cursor:pointer}
+    .lightbox .figure{background:#0b1016}
+    .lightbox .figure img{width:100%; height:auto; display:block}
+    .lightbox .body{padding:14px}
+    .lightbox .body p{color:var(--muted); margin:0}
+
+    /* FIXED Clients marquee - centered and contained */
+    .clients{position:relative}
+    .clients-wrap{position:relative; overflow:hidden; padding:24px 0; margin:0 auto; width:100%}
+    .clients-wrap::before, .clients-wrap::after{content:""; position:absolute; top:0; bottom:0; width:60px; pointer-events:none; z-index:2}
+    .clients-wrap::before{left:0; background:linear-gradient(90deg, rgba(11,15,20,1), rgba(11,15,20,0))}
+    .clients-wrap::after{right:0; background:linear-gradient(270deg, rgba(11,15,20,1), rgba(11,15,20,0))}
+    .clients-track{display:flex; gap:42px; align-items:center; will-change:transform; height:60px}
+    .client{flex:0 0 auto; opacity:.75; filter:grayscale(100%); transition:opacity .3s ease, filter .3s ease; height:42px; display:flex; align-items:center}
+    .client:hover{opacity:1; filter:grayscale(0%)}
+    .client img{height:42px; width:auto; display:block; filter:drop-shadow(0 2px 4px rgba(0,0,0,.2)); max-width:180px; object-fit:contain}
+
+    .contact-grid{display:grid; grid-template-columns:.8fr 1.2fr; gap:18px}
+    .panel{background:linear-gradient(180deg,#0e151d,#0c1117); border:1px solid #162232; border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow)}
+    .info-list{display:grid; gap:12px; color:var(--muted)}
+
+    form{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+    form .full{grid-column:1/-1}
+    input,textarea,select{width:100%; margin-top:6px; background:#0b1016; border:1px solid #1a2a3b; color:var(--ink); padding:12px; border-radius:12px}
+    textarea{min-height:120px; resize:vertical}
+    .cta.submit{justify-self:start}
+    .hidden{display:none}
+    .success-message{padding:24px;background:#0c1117;border:1px solid #162232;border-radius:var(--radius-lg);box-shadow:var(--shadow);font-size:1.1rem;color:var(--brand)}
+
+    @keyframes fadeUp{to{opacity:1; transform:none}}
+
+    @media (max-width:980px){ .cards .card{grid-column:span 6} .steps{grid-template-columns:repeat(2,1fr)} .contact-grid{grid-template-columns:1fr} }
+    @media (max-width:640px){ .cards .card{grid-column:span 12} .nav-links{display:none} }
+
+    @media (prefers-reduced-motion: reduce){
+      .reveal{opacity:1!important; transform:none!important; transition:none!important}
+      .bg-media,.banner video{transform:none!important}
+      .clients-track{animation:none!important; transform:none!important}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top"><span class="brand-logo"></span><span>CDL Imaging</span></a>
+      <nav class="nav-links"><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#clients">Clients</a><a href="#contact">Contact</a></nav>
+      <a class="cta" href="#contact">Get a Quote</a>
+    </div>
+  </header>
+
+  <!-- Banner video -->
+  <section class="banner sep-top">
+    <video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/banner.mp4"></video>
+    <div class="content container">
+      <h1>CDL Imaging</h1>
+      <p>Architectural Visualization & Flythroughs</p>
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <section id="top" class="block sep-top">
+    <div class="bg-wrap">
+      <video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/hero.mp4"></video>
+      <div class="bg-overlay"></div>
+    </div>
+    <div class="container">
+      <h2 class="reveal">Photoreal renderings that sell ideas and win approvals.</h2>
+      <p class="sub reveal">CDL Imaging partners with architects, developers, and agencies to deliver cinematic stills, animations, and interactive experiences—on time, on brief, and on budget.</p>
+      <div style="display:flex; gap:14px; flex-wrap:wrap">
+        <a class="cta reveal" href="#contact">Start Your Project</a>
+        <a class="cta reveal" style="background:linear-gradient(180deg,var(--brand-2),#5487ff); color:#07121a" href="#work">View Portfolio</a>
+      </div>
+      <div class="stats reveal" data-delay=".15">
+        <div class="stat"><b>1200+</b><span>Images Delivered</span></div>
+        <div class="stat"><b>950+</b><span>Happy Stakeholders</span></div>
+        <div class="stat"><b>50+</b><span>Developers & Studios</span></div>
+        <div class="stat"><b>100+</b><span>Cities Visualized</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="block sep-top">
+    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/services.mp4"></video><div class="bg-overlay"></div></div>
+    <div class="container">
+      <h2 class="reveal">Services</h2>
+      <p class="sub reveal">From schematic mood frames to production‑grade hero shots.</p>
+      <div class="cards">
+        <article class="card reveal feature">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20h16M4 16l8-12 8 12" stroke="#6aa3ff" stroke-width="1.6"/><path d="M9 16h6l-3-5-3 5z" fill="#45d1b8" opacity=".6"/></svg>
+          <div><h3>Exterior & Interior Renders</h3><p class="sub">Photoreal CGI with measured materials, accurate lighting, and art‑directed storytelling.</p></div>
+        </article>
+        <article class="card reveal feature">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 5h18v10H3z" stroke="#6aa3ff" stroke-width="1.6"/><path d="M8 19h8" stroke="#45d1b8" stroke-width="1.6"/></svg>
+          <div><h3>Animated Fly‑throughs</h3><p class="sub">Choreographed cameras, aerials, and narrative edits. 4K delivery with tasteful finishing.</p></div>
+        </article>
+        <article class="card reveal feature">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2" stroke="#6aa3ff" stroke-width="1.6"/><path d="M9 9h6v6H9z" fill="#45d1b8" opacity=".5"/></svg>
+          <div><h3>Real‑Time & XR</h3><p class="sub">VR/AR walkthroughs and web‑based viewers for on‑site reviews, leasing, and launches.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section id="process" class="block sep-top">
+    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/process.mp4"></video><div class="bg-overlay"></div></div>
+    <div class="container">
+      <h2 class="reveal">Process</h2>
+      <p class="sub reveal">Transparent milestones and approvals—no surprises.</p>
+      <div class="steps">
+        <div class="step reveal"><b>01 • Discovery</b> Scope, timeline, and references.</div>
+        <div class="step reveal"><b>02 • Ingest</b> Import CAD/BIM, cleanup, and mood board.</div>
+        <div class="step reveal"><b>03 • Clay Draft</b> Cameras and lighting in white‑card form.</div>
+        <div class="step reveal"><b>04 • Polish</b> Materials, foliage, people, and final color.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work (JSON-driven) -->
+  <section id="work" class="block sep-top">
+    <div class="bg-wrap"><video class="bg-media" muted loop playsinline preload="metadata" data-src-mp4="/media/work.mp4"></video><div class="bg-overlay"></div></div>
+    <div class="container">
+      <h2 class="reveal">Selected Work</h2>
+      <p class="sub reveal">Click any card to view the full image and details.</p>
+      <div class="work-carousel reveal">
+        <div class="work-viewport" tabindex="0" role="region" aria-label="Work samples carousel">
+          <div id="workTrack" class="work-track" aria-live="polite"></div>
+        </div>
+        <div class="work-nav" aria-hidden="false">
+          <button class="prev" type="button" aria-label="Previous" onclick="window._workScroll(-1)">&#10094;</button>
+          <button class="next" type="button" aria-label="Next" onclick="window._workScroll(1)">&#10095;</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Work detail">
+      <div class="panel">
+        <header>
+          <h3 id="lbTitle">Title</h3>
+          <button class="close" type="button" aria-label="Close" onclick="window._closeLightbox()">✕</button>
+        </header>
+        <div class="figure"><img id="lbImg" alt="" loading="lazy"></div>
+        <div class="body"><p id="lbDesc"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIXED Clients (simplified and always visible) -->
+  <section id="clients" class="clients sep-top">
+    <div class="container">
+      <h2 class="reveal">Trusted by leading developers & studios</h2>
+      <div class="clients-wrap" aria-label="Clients logo marquee" role="region">
+        <div id="clientsTrack" class="clients-track"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact - simplified -->
+  <section id="contact" class="sep-top">
+    <div class="container">
+      <h2 class="reveal">Start a Project</h2>
+      <div class="contact-grid">
+        <div class="panel reveal">
+          <p class="sub">Tell us a bit about your scope and schedule. We'll reply with a tailored estimate.</p>
+          <div class="info-list">
+            <div><b>Email</b><div><a href="mailto:hello@cdlimaging.com">hello@cdlimaging.com</a></div></div>
+            <div><b>Call</b><div>+1 (555) 555‑0123</div></div>
+            <div><b>Office</b><div>Los Angeles · PST</div></div>
+          </div>
+        </div>
+        <div class="panel reveal">
+          <form id="contactForm" action="https://formspree.io/f/xandknyv" method="POST">
+            <input type="hidden" name="_subject" value="New CDL Imaging inquiry">
+            <input type="text" name="_gotcha" style="display:none" autocomplete="off">
+            <div><label>Full Name<input required name="name" placeholder="Jane Architect"></label></div>
+            <div><label>Company<input name="company" placeholder="Studio / Developer"></label></div>
+            <div class="full"><label>Email<input required type="email" name="email" placeholder="you@company.com"></label></div>
+            <div><label>Project Type<select name="type"><option>Exterior Still</option><option>Interior Still</option><option>Animation</option><option>Real‑Time / XR</option><option>Other</option></select></label></div>
+            <div><label>Desired Timeline<input name="timeline" placeholder="e.g., 3 weeks"></label></div>
+            <div class="full"><label>Message<textarea name="message" placeholder="Tell us about scope, deliverables, references, and constraints."></textarea></label></div>
+            <button class="cta submit" type="submit">Request Quote</button>
+          </form>
+          <div id="successMsg" class="success-message hidden">✅ Thanks! Your message has been sent. We'll be in touch shortly.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="padding:34px 0; color:var(--muted); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; border-top:1px solid var(--line)">
+      <div>© <span id="y"></span> CDL Imaging. All rights reserved.</div>
+      <div style="display:flex; gap:14px">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#clients">Clients</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Reveal on view
+    (function(){
+      const els = Array.from(document.querySelectorAll('.reveal'));
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach((e,i)=>{ if(e.isIntersecting){ e.target.style.transitionDelay=(e.target.dataset.delay||(0.05*(i%6)))+'s'; e.target.classList.add('in'); io.unobserve(e.target); } });
+      },{threshold:.12, rootMargin:'0px 0px -10% 0px'});
+      els.forEach(el=> io.observe(el));
+    })();
+
+    // Parallax videos (lazy + reduced motion safe)
+    (function(){
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const vids = Array.from(document.querySelectorAll('video.bg-media, .banner video'));
+      const load = v => { if(v && v.dataset.srcMp4 && !v.querySelector('source')){ const s=document.createElement('source'); s.src=v.dataset.srcMp4; s.type='video/mp4'; v.appendChild(s); v.load(); } };
+      if(reduce){ vids.forEach(v=>{ v.removeAttribute('autoplay'); v.removeAttribute('loop'); v.pause&&v.pause(); }); return; }
+      const vio = new IntersectionObserver((es)=>{ es.forEach(({isIntersecting,target})=>{ if(isIntersecting){ load(target); target.play().catch(()=>{});} else { target.pause(); } }); },{threshold:.2});
+      vids.forEach(v=> vio.observe(v));
+      let ticking=false; const factor=0.08; const onScroll=()=>{ if(ticking) return; ticking=true; requestAnimationFrame(()=>{ vids.forEach(v=>{ const r=v.getBoundingClientRect(); const offset=(r.top+r.height/2)-(innerHeight/2); v.style.transform=`translateY(${(-offset*factor).toFixed(2)}px)`; }); ticking=false;});};
+      addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
+    })();
+
+    // Work carousel
+    (function(){
+      const track = document.getElementById('workTrack'); if(!track) return;
+      const buildCard = (item)=>{ const card=document.createElement('article'); card.className='work-card'; card.tabIndex=0; card.setAttribute('role','button'); card.setAttribute('aria-label',`Open ${item.title||'work item'}`); const img=new Image(); img.loading='lazy'; img.alt=item.title||'Work sample'; img.src=item.image; const meta=document.createElement('div'); meta.className='meta'; const h4=document.createElement('h4'); h4.textContent=item.title||'Untitled'; const p=document.createElement('p'); p.textContent=item.description||''; meta.append(h4,p); card.append(img,meta); card.addEventListener('click',()=>openLightbox(item)); card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openLightbox(item);} }); return card; };
+      const placeholders=[{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Atrium Concept', description:'Lorem ipsum dolor sit amet.'},{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Courtyard — Blue Hour', description:'Sed do eiusmod tempor.'},{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Lobby — Soft Morning', description:'Ut enim ad minim veniam.'}];
+      async function fetchJson(){ try{ const r=await fetch('/media/work.json',{cache:'no-store'}); if(!r.ok) throw 0; const d=await r.json(); if(!Array.isArray(d)||!d.length) throw 0; return d; }catch{ return placeholders; } }
+      function render(items){ track.innerHTML=''; items.forEach(it=> track.appendChild(buildCard(it))); }
+      window._workScroll=(dir)=>{ const vw=track.parentElement.clientWidth; track.scrollBy({left:dir*(vw*.8), behavior:'smooth'}); };
+      const lb=document.getElementById('lightbox'), img=document.getElementById('lbImg'), t=document.getElementById('lbTitle'), d=document.getElementById('lbDesc');
+      window._closeLightbox=()=>{ lb.classList.remove('open'); document.body.style.overflow=''; };
+      function openLightbox(item){ img.src=item.image; img.alt=item.title||''; t.textContent=item.title||'Untitled'; d.textContent=item.longDescription||item.description||''; lb.classList.add('open'); document.body.style.overflow='hidden'; lb.addEventListener('click',e=>{ if(e.target===lb) _closeLightbox(); },{once:true}); addEventListener('keydown',e=>{ if(e.key==='Escape') _closeLightbox(); },{once:true}); }
+      fetchJson().then(render);
+    })();
+
+    // FIXED Clients marquee — centered and contained
+    (function(){
+      const container = document.querySelector('.clients-wrap');
+      const track = document.getElementById('clientsTrack');
+      if(!container || !track) return;
+
+      const defaultNames = [
+        'Apex Development', 'Broadline Studios', 'Cobalt Architecture', 
+        'Deltaworks', 'Evergreen Properties', 'Foundry Design', 
+        'Horizon Group', 'Ironwood Developers', 'Juniper Studios', 'Keystone Partners'
+      ];
+      
+      const makeSVG = (text) => {
+        const encoded = encodeURIComponent(text);
+        return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'><rect width='100%' height='100%' fill='%230b0f14'/><text x='50%' y='55%' text-anchor='middle' font-family='Inter,Segoe UI,Roboto' font-size='16' font-weight='600' fill='%23aab8c7' letter-spacing='0.5'>${encoded}</text></svg>`;
+      };
+      
+      const placeholderItems = defaultNames.map(name => ({
+        logo: makeSVG(name), 
+        name: name
+      }));
+
+      function createLogoElement(item) {
+        const wrapper = item.url ? document.createElement('a') : document.createElement('div');
+        if (item.url) {
+          wrapper.href = item.url;
+          wrapper.target = '_blank';
+          wrapper.rel = 'noopener noreferrer';
+        }
+        wrapper.className = 'client';
+        
+        const img = new Image();
+        img.alt = item.name || 'Client';
+        img.src = item.logo;
+        img.onerror = function() {
+          // Fallback if image fails to load
+          this.src = makeSVG(item.name || 'Client');
+        };
+        
+        wrapper.appendChild(img);
+        return wrapper;
+      }
+
+      let animationX = 0;
+      let animationSpeed = 25; // Moderate speed
+      let totalContentWidth = 0;
+      let isVisible = true;
+      let animationId = null;
+      
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      // Intersection observer to pause animation when not visible
+      const visibilityObserver = new IntersectionObserver(entries => {
+        entries.forEach(({isIntersecting}) => {
+          isVisible = isIntersecting;
+        });
+      }, {threshold: 0});
+      
+      visibilityObserver.observe(container);
+
+      function measureContentWidth() {
+        const children = Array.from(track.children);
+        if (children.length === 0) return 0;
+        
+        let totalWidth = 0;
+        children.forEach(child => {
+          const rect = child.getBoundingClientRect();
+          totalWidth += rect.width + 42; // 42px gap from CSS
+        });
+        return totalWidth;
+      }
+
+      function buildTrack(items) {
+        // Clear existing content
+        track.innerHTML = '';
+        
+        // Add items to track
+        items.forEach(item => {
+          track.appendChild(createLogoElement(item));
+        });
+        
+        // Wait for images to load, then measure
+        setTimeout(() => {
+          totalContentWidth = measureContentWidth();
+          
+          // Ensure we have enough content for seamless scrolling
+          const containerWidth = container.clientWidth;
+          const minRequiredWidth = containerWidth * 2.5; // Need extra for smooth loop
+          
+          let currentItems = [...items];
+          while (totalContentWidth < minRequiredWidth && totalContentWidth > 0) {
+            currentItems.forEach(item => {
+              track.appendChild(createLogoElement(item));
+            });
+            totalContentWidth = measureContentWidth();
+            
+            // Safety check to prevent infinite loop
+            if (track.children.length > 50) break;
+          }
+          
+          // Reset animation position
+          animationX = 0;
+          track.style.transform = 'translateX(0px)';
+        }, 100);
+      }
+
+      function animate(timestamp) {
+        if (!animate.lastTime) animate.lastTime = timestamp;
+        const deltaTime = (timestamp - animate.lastTime) / 1000;
+        animate.lastTime = timestamp;
+
+        if (isVisible && !prefersReducedMotion && totalContentWidth > 0) {
+          animationX -= animationSpeed * deltaTime;
+          
+          // Reset position when we've scrolled half the content width
+          const resetPoint = -(totalContentWidth / 2);
+          if (animationX <= resetPoint) {
+            animationX += (totalContentWidth / 2);
+          }
+          
+          track.style.transform = `translateX(${animationX}px)`;
+        }
+
+        animationId = requestAnimationFrame(animate);
+      }
+
+      // Initialize with placeholders immediately
+      buildTrack(placeholderItems);
+      
+      // Start animation
+      if (!prefersReducedMotion) {
+        animationId = requestAnimationFrame(animate);
+      }
+
+      // Try to load real client data
+      async function loadRealClientData() {
+        try {
+          const response = await fetch('/media/clients.json', {
+            cache: 'no-store'
+          });
+          
+          if (!response.ok) {
+            return; // Keep placeholders
+          }
+          
+          const data = await response.json();
+          
+          if (Array.isArray(data) && data.length > 0) {
+            const clientItems = data.map(client => ({
+              logo: client.logo || makeSVG(client.name || 'Client'),
+              name: client.name || 'Client',
+              url: client.url || null
+            }));
+            buildTrack(clientItems);
+          }
+        } catch (error) {
+          // Keep placeholders on error
+          console.log('Using placeholder clients due to:', error.message);
+        }
+      }
+
+      // Load real data after a short delay
+      setTimeout(loadRealClientData, 200);
+
+      // Handle window resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          // Get current unique items and rebuild
+          const seenNames = new Set();
+          const currentItems = [];
+          
+          Array.from(track.querySelectorAll('img')).forEach(img => {
+            if (!seenNames.has(img.alt)) {
+              seenNames.add(img.alt);
+              currentItems.push({
+                logo: img.src,
+                name: img.alt,
+                url: img.parentElement.href || null
+              });
+            }
+          });
+          
+          if (currentItems.length > 0) {
+            buildTrack(currentItems);
+          } else {
+            buildTrack(placeholderItems);
+          }
+        }, 300);
+      });
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        visibilityObserver.disconnect();
+      });
+    })();
+
+    // Formspree AJAX
+    (function(){
+      const form = document.getElementById('contactForm');
+      const success = document.getElementById('successMsg');
+      if(!form) return;
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const data = new FormData(form);
+        try{
+          const res = await fetch(form.action, {method:'POST', body:data, headers:{'Accept':'application/json'}});
+          if(res.ok){ form.classList.add('hidden'); success.classList.remove('hidden'); }
+          else { alert('Error submitting form. Please try again.'); }
+        }catch(err){ alert('Network error.'); }
+      });
+    })();
+  </script>
+</body>
+</html>
