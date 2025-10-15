@@ -281,6 +281,59 @@
     </div>
   </footer>
 
+  <script id="work-data" type="application/json">
+[
+  {
+    "title": "Riverside Tower Lobby",
+    "description": "Evening lobby lighting study with warm tonal balance.",
+    "longDescription": "A cinematic composition highlighting hospitality-grade finishes, layered reflections, and wayfinding signage for a mixed-use tower atrium.",
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'><defs><linearGradient id='g1' x1='0' x2='1'><stop stop-color='%230b0f14'/><stop offset='1' stop-color='%2318222f'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g1)'/><g fill='%23e8eef4' font-family='Inter,Segoe UI,Roboto' text-anchor='middle'><text x='50%' y='45%' font-size='58'>Riverside Lobby</text><text x='50%' y='57%' font-size='30'>Replace with project rendering</text></g></svg>"
+  },
+  {
+    "title": "Skyline Residences",
+    "description": "Golden hour exterior showcasing amenity decks.",
+    "longDescription": "Aerial hero frame emphasizing tiered terraces, glazing rhythm, and contextual skyline for a residential launch campaign.",
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'><defs><linearGradient id='g2' x1='0' x2='1'><stop stop-color='%230b0f14'/><stop offset='1' stop-color='%23191f27'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g2)'/><g fill='%236aa3ff' font-family='Inter,Segoe UI,Roboto' text-anchor='middle'><text x='50%' y='45%' font-size='58'>Skyline Residences</text><text x='50%' y='57%' font-size='30' fill='%23aab8c7'>Placeholder illustration</text></g></svg>"
+  },
+  {
+    "title": "Harborview Boardwalk",
+    "description": "Dusk sequence with animated storefront lighting.",
+    "longDescription": "Boardwalk retail frontage rendered with volumetric fog, pedestrian vignettes, and branded signage for leasing collateral.",
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'><defs><linearGradient id='g3' x1='0' x2='1'><stop stop-color='%230b0f14'/><stop offset='1' stop-color='%23141b24'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g3)'/><g fill='%2345d1b8' font-family='Inter,Segoe UI,Roboto' text-anchor='middle'><text x='50%' y='45%' font-size='58'>Harborview Boardwalk</text><text x='50%' y='57%' font-size='30' fill='%23aab8c7'>Swap with final still</text></g></svg>"
+  },
+  {
+    "title": "Summit Conference Center",
+    "description": "Interior daylight study highlighting conference amenities.",
+    "longDescription": "Wide-angle still of a conference level with layered daylight, acoustic treatment, and collaborative zones prepared for stakeholder review.",
+    "image": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'><defs><linearGradient id='g4' x1='0' x2='1'><stop stop-color='%230b0f14'/><stop offset='1' stop-color='%231e2833'/></linearGradient></defs><rect width='100%' height='100%' fill='url(%23g4)'/><g fill='%23e8eef4' font-family='Inter,Segoe UI,Roboto' text-anchor='middle'><text x='50%' y='45%' font-size='58'>Summit Center</text><text x='50%' y='57%' font-size='30' fill='%23aab8c7'>Upload hero render here</text></g></svg>"
+  }
+]
+  </script>
+  <script id="clients-data" type="application/json">
+[
+  {
+    "name": "Northwind Developments",
+    "logo": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'><rect width='100%' height='100%' fill='%230b0f14'/><text x='50%' y='55%' text-anchor='middle' font-family='Inter,Segoe UI,Roboto' font-size='18' font-weight='600' fill='%236aa3ff'>Northwind</text></svg>",
+    "url": "https://example.com/northwind"
+  },
+  {
+    "name": "Lumen Studio",
+    "logo": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'><rect width='100%' height='100%' fill='%230b0f14'/><text x='50%' y='55%' text-anchor='middle' font-family='Inter,Segoe UI,Roboto' font-size='18' font-weight='600' fill='%2345d1b8'>Lumen Studio</text></svg>",
+    "url": "https://example.com/lumen"
+  },
+  {
+    "name": "Cobalt Partners",
+    "logo": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'><rect width='100%' height='100%' fill='%230b0f14'/><text x='50%' y='55%' text-anchor='middle' font-family='Inter,Segoe UI,Roboto' font-size='18' font-weight='600' fill='%23e8eef4'>Cobalt Partners</text></svg>",
+    "url": "https://example.com/cobalt"
+  },
+  {
+    "name": "Evergreen Property Group",
+    "logo": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'><rect width='100%' height='100%' fill='%230b0f14'/><text x='50%' y='55%' text-anchor='middle' font-family='Inter,Segoe UI,Roboto' font-size='16' font-weight='600' fill='%23aab8c7'>Evergreen</text></svg>",
+    "url": "https://example.com/evergreen"
+  }
+]
+  </script>
+
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
 
@@ -310,13 +363,26 @@
       const track = document.getElementById('workTrack'); if(!track) return;
       const buildCard = (item)=>{ const card=document.createElement('article'); card.className='work-card'; card.tabIndex=0; card.setAttribute('role','button'); card.setAttribute('aria-label',`Open ${item.title||'work item'}`); const img=new Image(); img.loading='lazy'; img.alt=item.title||'Work sample'; img.src=item.image; const meta=document.createElement('div'); meta.className='meta'; const h4=document.createElement('h4'); h4.textContent=item.title||'Untitled'; const p=document.createElement('p'); p.textContent=item.description||''; meta.append(h4,p); card.append(img,meta); card.addEventListener('click',()=>openLightbox(item)); card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openLightbox(item);} }); return card; };
       const placeholders=[{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Atrium Concept', description:'Lorem ipsum dolor sit amet.'},{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Courtyard — Blue Hour', description:'Sed do eiusmod tempor.'},{image:'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="%230b0f14"/><stop offset="1" stop-color="%23141b24"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/><g fill="%23aab8c7" font-family="Inter,Segoe UI,sans-serif"><text x="50%" y="48%" font-size="46" text-anchor="middle">Public Domain Placeholder</text><text x="50%" y="58%" font-size="28" text-anchor="middle">Replace with your render</text></g></svg>', title:'Lobby — Soft Morning', description:'Ut enim ad minim veniam.'}];
-      async function fetchJson(){ try{ const r=await fetch('media/work.json',{cache:'no-store'}); if(!r.ok) throw 0; const d=await r.json(); if(!Array.isArray(d)||!d.length) throw 0; return d; }catch{ return placeholders; } }
+      function getInlineData(){
+        const el=document.getElementById('work-data');
+        if(!el) return null;
+        try{
+          const parsed=JSON.parse(el.textContent);
+          if(Array.isArray(parsed) && parsed.length){
+            return parsed;
+          }
+        }catch(err){
+          console.warn('Failed to parse work data:', err);
+        }
+        return null;
+      }
       function render(items){ track.innerHTML=''; items.forEach(it=> track.appendChild(buildCard(it))); }
       window._workScroll=(dir)=>{ const vw=track.parentElement.clientWidth; track.scrollBy({left:dir*(vw*.8), behavior:'smooth'}); };
       const lb=document.getElementById('lightbox'), img=document.getElementById('lbImg'), t=document.getElementById('lbTitle'), d=document.getElementById('lbDesc');
       window._closeLightbox=()=>{ lb.classList.remove('open'); document.body.style.overflow=''; };
       function openLightbox(item){ img.src=item.image; img.alt=item.title||''; t.textContent=item.title||'Untitled'; d.textContent=item.longDescription||item.description||''; lb.classList.add('open'); document.body.style.overflow='hidden'; lb.addEventListener('click',e=>{ if(e.target===lb) _closeLightbox(); },{once:true}); addEventListener('keydown',e=>{ if(e.key==='Escape') _closeLightbox(); },{once:true}); }
-      fetchJson().then(render);
+      const data=getInlineData();
+      render(data||placeholders);
     })();
 
     // FIXED Clients marquee — centered and contained
@@ -453,35 +519,28 @@
         animationId = requestAnimationFrame(animate);
       }
 
-      // Try to load real client data
-      async function loadRealClientData() {
+      function getInlineClientData() {
+        const el = document.getElementById('clients-data');
+        if (!el) return null;
         try {
-          const response = await fetch('media/clients.json', {
-            cache: 'no-store'
-          });
-          
-          if (!response.ok) {
-            return; // Keep placeholders
-          }
-          
-          const data = await response.json();
-          
-          if (Array.isArray(data) && data.length > 0) {
-            const clientItems = data.map(client => ({
+          const parsed = JSON.parse(el.textContent);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map(client => ({
               logo: client.logo || makeSVG(client.name || 'Client'),
               name: client.name || 'Client',
               url: client.url || null
             }));
-            buildTrack(clientItems);
           }
         } catch (error) {
-          // Keep placeholders on error
-          console.log('Using placeholder clients due to:', error.message);
+          console.warn('Failed to parse client data:', error);
         }
+        return null;
       }
 
-      // Load real data after a short delay
-      setTimeout(loadRealClientData, 200);
+      const inlineClients = getInlineClientData();
+      if (inlineClients) {
+        buildTrack(inlineClients);
+      }
 
       // Handle window resize
       let resizeTimeout;
