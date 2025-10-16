@@ -772,13 +772,69 @@
         }
         return null;
       }
-      function render(items){ track.innerHTML=''; items.forEach(it=> track.appendChild(buildCard(it))); }
       const viewport = track.closest('.work-viewport') || track.parentElement;
+      let cards = [];
+      let currentIndex = 0;
+      const focusOpts = {preventScroll:true};
+
+      function syncCards(){
+        cards = Array.from(track.children);
+        cards.forEach((card, idx)=>{
+          card.addEventListener('focus', ()=>{ currentIndex = idx; });
+          card.addEventListener('mouseenter', ()=>{ currentIndex = idx; });
+        });
+      }
+
+      function scrollToIndex(index, {smooth=true}={}){
+        const target = cards[index];
+        if(!viewport || !target) return;
+        viewport.scrollTo({left:target.offsetLeft, behavior:smooth ? 'smooth' : 'auto'});
+      }
+
       window._workScroll = (dir)=>{
-        if(!viewport) return;
-        const vw = viewport.clientWidth || track.clientWidth;
-        viewport.scrollBy({left:dir*(vw*.8), behavior:'smooth'});
+        if(!cards.length) return;
+        currentIndex = (currentIndex + dir + cards.length) % cards.length;
+        scrollToIndex(currentIndex);
+        const target = cards[currentIndex];
+        if(target){
+          try{ target.focus(focusOpts); }
+          catch(err){ target.focus(); }
+        }
       };
+
+      let scrollTick = false;
+      viewport && viewport.addEventListener('scroll', ()=>{
+        if(scrollTick) return;
+        scrollTick = true;
+        requestAnimationFrame(()=>{
+          scrollTick = false;
+          if(!cards.length) return;
+          let nearest = 0;
+          let minDist = Infinity;
+          cards.forEach((card, idx)=>{
+            const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+            const relativeCenter = cardCenter - viewport.scrollLeft;
+            const dist = Math.abs(relativeCenter - viewport.clientWidth / 2);
+            if(dist < minDist){
+              minDist = dist;
+              nearest = idx;
+            }
+          });
+          currentIndex = nearest;
+        });
+      }, {passive:true});
+
+      function render(items){
+        track.innerHTML='';
+        items.forEach(it=> track.appendChild(buildCard(it)));
+        syncCards();
+        if(!cards.length){
+          currentIndex = 0;
+          return;
+        }
+        currentIndex = Math.max(0, Math.min(currentIndex, cards.length - 1));
+        scrollToIndex(currentIndex, {smooth:false});
+      }
       const lb=document.getElementById('lightbox'), img=document.getElementById('lbImg'), t=document.getElementById('lbTitle'), d=document.getElementById('lbDesc');
       window._closeLightbox=()=>{ lb.classList.remove('open'); document.body.style.overflow=''; };
       function openLightbox(item){ img.src=item.image; img.alt=item.title||''; t.textContent=item.title||'Untitled'; d.textContent=item.longDescription||item.description||''; lb.classList.add('open'); document.body.style.overflow='hidden'; lb.addEventListener('click',e=>{ if(e.target===lb) _closeLightbox(); },{once:true}); addEventListener('keydown',e=>{ if(e.key==='Escape') _closeLightbox(); },{once:true}); }
