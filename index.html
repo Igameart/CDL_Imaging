@@ -440,6 +440,7 @@
       let rig = null;
       let isLooping = false;
       let isVisible = false;
+      let isFullscreen = false;
       let observer;
 
       function loadScript(src){
@@ -478,7 +479,8 @@
         if(engine && scene && !isLooping){
           engine.runRenderLoop(()=>{ scene && scene.render(); });
           isLooping = true;
-          setStatus('Drag to orbit, scroll to zoom, or tap to explore.');
+          const message = isFullscreen ? 'Fullscreen preview active — drag to orbit and scroll or pinch to zoom.' : 'Drag to orbit, scroll to zoom, or tap to explore.';
+          setStatus(message);
         }
       }
 
@@ -486,7 +488,7 @@
         if(engine && isLooping){
           engine.stopRenderLoop();
           isLooping = false;
-          if(!silent && scene){
+          if(!silent && scene && !isFullscreen){
             setStatus('Preview paused while off screen. Scroll back to resume.');
           }
         }
@@ -671,7 +673,7 @@
           isVisible = entry.isIntersecting;
           if(isVisible){
             onVisible();
-          }else{
+          }else if(!isFullscreen){
             stopLoop();
           }
         });
@@ -687,7 +689,28 @@
       });
 
       window.addEventListener('resize', ()=>{ if(engine) engine.resize(); });
-      document.addEventListener('fullscreenchange', ()=>{ if(engine) engine.resize(); });
+
+      const updateFullscreenState = ()=>{
+        const fullscreenEl = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+        isFullscreen = fullscreenEl === canvas || fullscreenEl === section;
+        if(engine){
+          engine.resize();
+        }
+        if(isFullscreen){
+          startLoop();
+          setStatus('Fullscreen preview active — drag to orbit and scroll or pinch to zoom.');
+        }else if(scene){
+          if(isVisible){
+            setStatus('Drag to orbit, scroll to zoom, or tap to explore.');
+          }else if(!document.hidden){
+            setStatus('Preview paused while off screen. Scroll back to resume.');
+          }
+        }
+      };
+
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+      document.addEventListener('msfullscreenchange', updateFullscreenState);
 
       if(fullscreenBtn){
         fullscreenBtn.addEventListener('click', ()=>{
