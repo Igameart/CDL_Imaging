@@ -529,16 +529,21 @@
         pipeline.grain.intensity = 6;
         pipeline.grain.animated = true;
         pipeline.chromaticAberrationEnabled = true;
-        pipeline.chromaticAberration.aberrationAmount = 18;
-        pipeline.chromaticAberration.radialIntensity = 0.6;
-        pipeline.chromaticAberration.direction = new BABYLON.Vector2(0.25, 0.18);
-        pipeline.chromaticAberration.centerPosition = new BABYLON.Vector2(0.5, 0.5);
+        if(pipeline.chromaticAberration){
+          pipeline.chromaticAberration.aberrationAmount = 18;
+          pipeline.chromaticAberration.radialIntensity = 0.6;
+          pipeline.chromaticAberration.direction = new BABYLON.Vector2(0.25, 0.18);
+          pipeline.chromaticAberration.centerPosition = new BABYLON.Vector2(0.5, 0.5);
+        }
         pipeline.ssaoEnabled = true;
-        pipeline.ssao.radius = 0.6;
-        pipeline.ssao.totalStrength = 0.45;
-        pipeline.ssao.area = 0.005;
-        pipeline.ssao.fallOff = 0.00001;
-        pipeline.ssao.base = 0.55;
+        if(pipeline.ssao || pipeline.ssao2){
+          const ao = pipeline.ssao || pipeline.ssao2;
+          ao.radius = 0.6;
+          ao.totalStrength = 0.45;
+          ao.area = 0.005;
+          ao.fallOff = 0.00001;
+          ao.base = 0.55;
+        }
 
 
         const hemi = new BABYLON.HemisphericLight('fillLight', new BABYLON.Vector3(0.3,1,0.4), scene);
