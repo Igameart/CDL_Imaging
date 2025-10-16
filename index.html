@@ -81,7 +81,7 @@
     .preview-status{color:var(--muted); font-size:.92rem}
 
     /* Work carousel */
-    .work-carousel{position:relative; margin-top:10px}
+    .work-carousel{margin-top:10px; display:flex; flex-direction:column; gap:16px}
     .work-viewport{overflow:hidden; outline:none}
     .work-track{display:flex; gap:16px; scroll-behavior:smooth; padding-bottom:4px}
     .work-card{flex:0 0 clamp(260px,33%,380px); background:#0c1117; border:1px solid #162232; border-radius:16px; overflow:hidden; cursor:pointer; transition:transform .25s ease}
@@ -90,8 +90,8 @@
     .work-card .meta{padding:12px}
     .work-card .meta h4{margin:0 0 6px; font-size:1rem}
     .work-card .meta p{margin:0; color:var(--muted); font-size:.9rem}
-    .work-nav{position:absolute; inset-block:0; display:flex; align-items:center; justify-content:space-between; pointer-events:none}
-    .work-nav button{pointer-events:auto; width:40px; height:40px; border-radius:999px; border:1px solid #203145; background:rgba(12,17,23,.8); color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow)}
+    .work-nav{display:flex; justify-content:center; align-items:center; gap:12px}
+    .work-nav button{width:40px; height:40px; border-radius:999px; border:1px solid #203145; background:rgba(12,17,23,.8); color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow)}
     .work-nav button:hover{background:rgba(20,28,38,.9)}
 
     /* Lightbox */
@@ -749,8 +749,69 @@
         }
         return null;
       }
-      function render(items){ track.innerHTML=''; items.forEach(it=> track.appendChild(buildCard(it))); }
-      window._workScroll=(dir)=>{ const vw=track.parentElement.clientWidth; track.scrollBy({left:dir*(vw*.8), behavior:'smooth'}); };
+      const viewport = track.closest('.work-viewport') || track.parentElement;
+      let cards = [];
+      let currentIndex = 0;
+      const focusOpts = {preventScroll:true};
+
+      function syncCards(){
+        cards = Array.from(track.children);
+        cards.forEach((card, idx)=>{
+          card.addEventListener('focus', ()=>{ currentIndex = idx; });
+          card.addEventListener('mouseenter', ()=>{ currentIndex = idx; });
+        });
+      }
+
+      function scrollToIndex(index, {smooth=true}={}){
+        const target = cards[index];
+        if(!viewport || !target) return;
+        viewport.scrollTo({left:target.offsetLeft, behavior:smooth ? 'smooth' : 'auto'});
+      }
+
+      window._workScroll = (dir)=>{
+        if(!cards.length) return;
+        currentIndex = (currentIndex + dir + cards.length) % cards.length;
+        scrollToIndex(currentIndex);
+        const target = cards[currentIndex];
+        if(target){
+          try{ target.focus(focusOpts); }
+          catch(err){ target.focus(); }
+        }
+      };
+
+      let scrollTick = false;
+      viewport && viewport.addEventListener('scroll', ()=>{
+        if(scrollTick) return;
+        scrollTick = true;
+        requestAnimationFrame(()=>{
+          scrollTick = false;
+          if(!cards.length) return;
+          let nearest = 0;
+          let minDist = Infinity;
+          cards.forEach((card, idx)=>{
+            const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+            const relativeCenter = cardCenter - viewport.scrollLeft;
+            const dist = Math.abs(relativeCenter - viewport.clientWidth / 2);
+            if(dist < minDist){
+              minDist = dist;
+              nearest = idx;
+            }
+          });
+          currentIndex = nearest;
+        });
+      }, {passive:true});
+
+      function render(items){
+        track.innerHTML='';
+        items.forEach(it=> track.appendChild(buildCard(it)));
+        syncCards();
+        if(!cards.length){
+          currentIndex = 0;
+          return;
+        }
+        currentIndex = Math.max(0, Math.min(currentIndex, cards.length - 1));
+        scrollToIndex(currentIndex, {smooth:false});
+      }
       const lb=document.getElementById('lightbox'), img=document.getElementById('lbImg'), t=document.getElementById('lbTitle'), d=document.getElementById('lbDesc');
       window._closeLightbox=()=>{ lb.classList.remove('open'); document.body.style.overflow=''; };
       function openLightbox(item){ img.src=item.image; img.alt=item.title||''; t.textContent=item.title||'Untitled'; d.textContent=item.longDescription||item.description||''; lb.classList.add('open'); document.body.style.overflow='hidden'; lb.addEventListener('click',e=>{ if(e.target===lb) _closeLightbox(); },{once:true}); addEventListener('keydown',e=>{ if(e.key==='Escape') _closeLightbox(); },{once:true}); }
