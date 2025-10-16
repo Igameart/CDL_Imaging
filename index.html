@@ -787,19 +787,52 @@
 
       function scrollToIndex(index, {smooth=true}={}){
         const target = cards[index];
-        if(!viewport || !target) return;
-        viewport.scrollTo({left:target.offsetLeft, behavior:smooth ? 'smooth' : 'auto'});
+        if(!viewport || !target) return 0;
+        const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+        const viewportWidth = viewport.clientWidth;
+        const targetWidth = target.offsetWidth;
+        let desired = target.offsetLeft - (viewportWidth - targetWidth) / 2;
+        desired = Math.max(0, Math.min(desired, maxScroll));
+        viewport.scrollTo({left:desired, behavior:smooth ? 'smooth' : 'auto'});
+        return desired;
+      }
+
+      function focusCard(index){
+        const target = cards[index];
+        if(!target) return;
+        try{ target.focus(focusOpts); }
+        catch(err){ target.focus(); }
       }
 
       window._workScroll = (dir)=>{
         if(!cards.length) return;
-        currentIndex = (currentIndex + dir + cards.length) % cards.length;
-        scrollToIndex(currentIndex);
-        const target = cards[currentIndex];
-        if(target){
-          try{ target.focus(focusOpts); }
-          catch(err){ target.focus(); }
+        if(!viewport){
+          currentIndex = (currentIndex + dir + cards.length) % cards.length;
+          focusCard(currentIndex);
+          return;
         }
+        const maxScroll = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+        const atStart = viewport.scrollLeft <= 1;
+        const atEnd = Math.abs(viewport.scrollLeft - maxScroll) <= 1;
+
+        if(dir > 0 && atEnd){
+          currentIndex = 0;
+          scrollToIndex(currentIndex);
+          focusCard(currentIndex);
+          return;
+        }
+
+        if(dir < 0 && atStart){
+          currentIndex = cards.length - 1;
+          scrollToIndex(currentIndex);
+          focusCard(currentIndex);
+          return;
+        }
+
+        const nextIndex = (currentIndex + dir + cards.length) % cards.length;
+        scrollToIndex(nextIndex);
+        currentIndex = nextIndex;
+        focusCard(currentIndex);
       };
 
       let scrollTick = false;
