@@ -37,7 +37,7 @@
     .banner .content{position:relative; z-index:2; animation:fadeUp .9s ease forwards; opacity:0; transform:translateY(30px)}
     .banner h1{font-size:clamp(2.6rem,5vw,4.2rem); margin:0; line-height:1.15}
     .banner p{margin-top:12px; font-size:1.15rem; color:var(--muted)}
-    .logo-reveal{opacity:0; filter:blur(18px); transform:scale(1.04); animation:logoReveal 2s cubic-bezier(.22,1,.36,1) forwards}
+    .logo-reveal{opacity:0; filter:blur(22px); transform:scale(1.06); animation:logoReveal 3.1s cubic-bezier(.22,1,.36,1) forwards}
 
     .sep-top{position:relative}
     .sep-top::before{content:""; position:absolute; left:0; right:0; top:-1px; height:1px; background:linear-gradient(90deg,transparent,#1e2833 20%,#1e2833 80%,transparent)}
@@ -132,8 +132,10 @@
 
     @keyframes fadeUp{to{opacity:1; transform:none}}
     @keyframes logoReveal{
-      0%{opacity:0; filter:blur(20px); transform:scale(1.06)}
-      65%{opacity:1; filter:blur(6px); transform:scale(1.01)}
+      0%{opacity:0; filter:blur(24px); transform:scale(1.07)}
+      18%{opacity:1; filter:blur(20px); transform:scale(1.05)}
+      58%{opacity:1; filter:blur(9px); transform:scale(1.02)}
+      82%{opacity:1; filter:blur(3px); transform:scale(1.005)}
       100%{opacity:1; filter:blur(0); transform:none}
     }
 
