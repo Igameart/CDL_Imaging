@@ -60,6 +60,26 @@
     .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
     .step{background:#0c1117; border:1px solid #162232; border-radius:var(--radius); padding:18px}
 
+    .preview-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:42px; align-items:center}
+    .preview-copy .sub{max-width:520px}
+    .preview-list{margin:0; padding-left:20px; display:grid; gap:10px; color:var(--muted)}
+    .preview-list strong{color:var(--ink)}
+    .preview-stage{background:linear-gradient(180deg,#0e151d,#0c1117); border:1px solid #162232; border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow)}
+    .preview-canvas-wrap{position:relative; border-radius:calc(var(--radius-lg) - 6px); overflow:hidden; background:#0b1016}
+    .preview-canvas-wrap::after{content:""; position:absolute; inset:0; pointer-events:none; border:1px solid rgba(69,209,184,.18); border-radius:inherit}
+    .preview-overlay{position:absolute; inset:0; display:flex; justify-content:space-between; flex-direction:column; padding:16px; pointer-events:none}
+    .preview-overlay-top{display:flex; justify-content:flex-end}
+    .preview-overlay-bottom{display:flex; justify-content:flex-start}
+    .preview-hint{font-size:.85rem; color:rgba(232,238,244,.85); background:rgba(12,17,23,.7); padding:6px 12px; border-radius:999px; backdrop-filter:blur(6px); letter-spacing:.01em}
+    .preview-control{pointer-events:auto; display:grid; place-items:center; width:38px; height:38px; border-radius:12px; border:1px solid rgba(69,209,184,.35); background:rgba(11,15,20,.65); color:var(--ink); cursor:pointer; transition:background .25s ease, transform .25s ease}
+    .preview-control:hover{background:rgba(20,28,38,.85); transform:translateY(-1px)}
+    .preview-control svg{width:18px; height:18px; fill:currentColor}
+    #realtimeCanvas{width:100%; aspect-ratio:16/9; display:block; background:radial-gradient(circle at 20% 20%, rgba(106,163,255,.18), rgba(12,17,23,1) 80%); border:none; border-radius:calc(var(--radius-lg) - 6px)}
+    .preview-poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:opacity .4s ease, visibility .4s ease; border-radius:inherit}
+    .preview-poster.hidden{opacity:0; visibility:hidden}
+    .preview-meta{display:flex; gap:12px; align-items:center; justify-content:space-between; margin-top:18px; flex-wrap:wrap}
+    .preview-status{color:var(--muted); font-size:.92rem}
+
     /* Work carousel */
     .work-carousel{position:relative; margin-top:10px}
     .work-viewport{overflow:hidden; outline:none}
@@ -111,8 +131,8 @@
 
     @keyframes fadeUp{to{opacity:1; transform:none}}
 
-    @media (max-width:980px){ .cards .card{grid-column:span 6} .steps{grid-template-columns:repeat(2,1fr)} .contact-grid{grid-template-columns:1fr} }
-    @media (max-width:640px){ .cards .card{grid-column:span 12} .nav-links{display:none} }
+    @media (max-width:980px){ .cards .card{grid-column:span 6} .steps{grid-template-columns:repeat(2,1fr)} .contact-grid{grid-template-columns:1fr} .preview-grid{grid-template-columns:1fr; gap:28px} }
+    @media (max-width:640px){ .cards .card{grid-column:span 12} .nav-links{display:none} .preview-meta{flex-direction:column; align-items:flex-start; gap:10px} #realtimeCanvas{aspect-ratio:4/3} }
 
     @media (prefers-reduced-motion: reduce){
       .reveal{opacity:1!important; transform:none!important; transition:none!important}
@@ -125,7 +145,7 @@
   <header>
     <div class="container nav">
       <a class="brand" href="#top"><span class="brand-logo"></span><span>CDL Imaging</span></a>
-      <nav class="nav-links"><a href="#services">Services</a><a href="#work">Work</a><a href="#process">Process</a><a href="#clients">Clients</a><a href="#contact">Contact</a></nav>
+      <nav class="nav-links"><a href="#services">Services</a><a href="#preview">Preview</a><a href="#work">Work</a><a href="#process">Process</a><a href="#clients">Clients</a><a href="#contact">Contact</a></nav>
       <a class="cta" href="#contact">Get a Quote</a>
     </div>
   </header>
@@ -182,6 +202,44 @@
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="16" height="16" rx="2" stroke="#6aa3ff" stroke-width="1.6"/><path d="M9 9h6v6H9z" fill="#45d1b8" opacity=".5"/></svg>
           <div><h3>Real‑Time & XR</h3><p class="sub">VR/AR walkthroughs and web‑based viewers for on‑site reviews, leasing, and launches.</p></div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real-time preview -->
+  <section id="preview" class="block sep-top">
+    <div class="container preview-grid">
+      <div class="preview-copy">
+        <h2 class="reveal">Experience your space in real time.</h2>
+        <p class="sub reveal">Walk stakeholders through daylight studies, finish swaps, and staging options directly in the browser—no installs, no friction.</p>
+        <ul class="preview-list reveal" data-delay=".08">
+          <li><strong>Interactive Babylon.js viewer</strong> streams a curated archviz scene as soon as it scrolls into view.</li>
+          <li><strong>Performance smart-loading</strong> pauses rendering when off screen so laptops and tablets stay responsive.</li>
+          <li><strong>Editor-ready pipeline</strong> makes swapping in Babylon Editor exports as simple as updating a manifest.</li>
+        </ul>
+        <div class="reveal" data-delay=".12" style="margin-top:22px; display:flex; gap:14px; flex-wrap:wrap">
+          <a class="cta" href="#contact">Book a Live Demo</a>
+          <a class="cta" style="background:linear-gradient(180deg,var(--brand-2),#5487ff); color:#07121a" href="#work">Explore Portfolio</a>
+        </div>
+      </div>
+      <div class="preview-stage reveal" data-delay=".12">
+        <div class="preview-canvas-wrap">
+          <img class="preview-poster" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230b0f14'/><stop offset='1' stop-color='%23172330'/></linearGradient></defs><rect width='1200' height='675' fill='url(%23g)'/><g fill='%23e8eef4' font-family='Inter,Segoe UI,Roboto' font-weight='600' text-anchor='middle'><text x='50%' y='44%' font-size='48'>Interactive preview</text><text x='50%' y='58%' font-size='26' fill='%23aab8c7'>Loads automatically when in view</text></g></svg>" alt="Placeholder still of the interactive real-time preview." loading="lazy">
+          <canvas id="realtimeCanvas" aria-label="Interactive Babylon.js architectural preview" aria-hidden="true"></canvas>
+          <div class="preview-overlay">
+            <div class="preview-overlay-top">
+              <button class="preview-control" type="button" data-preview-fullscreen aria-label="Enter fullscreen preview">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v5h2V6h3V4Zm6 0v2h3v3h2V4h-5ZM6 15H4v5h5v-2H6v-3Zm12 3h-3v2h5v-5h-2v3Z"/></svg>
+              </button>
+            </div>
+            <div class="preview-overlay-bottom">
+              <span class="preview-hint">Drag to orbit · Scroll to zoom</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-meta">
+          <p class="preview-status" data-preview-status>Interactive preview loads on demand.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -338,6 +396,370 @@
 
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Babylon.js real-time preview
+    (function(){
+      const section = document.getElementById('preview');
+      if(!section) return;
+      const canvas = section.querySelector('#realtimeCanvas');
+      if(!canvas) return;
+      const poster = section.querySelector('.preview-poster');
+      const statusEl = section.querySelector('[data-preview-status]');
+      const fullscreenBtn = section.querySelector('[data-preview-fullscreen]');
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const hasWebGL = (()=>{
+        try{
+          const testCanvas = document.createElement('canvas');
+          return !!window.WebGLRenderingContext && !!(testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl'));
+        }catch(err){
+          return false;
+        }
+      })();
+
+      const showPoster = ()=>{ if(poster) poster.classList.remove('hidden'); };
+      const hidePoster = ()=>{ if(poster) poster.classList.add('hidden'); };
+      const setStatus = (msg)=>{ if(statusEl) statusEl.textContent = msg; };
+
+      if(prefersReducedMotion){
+        setStatus('Interactive preview disabled to respect your reduced motion preference.');
+        canvas && canvas.setAttribute('aria-hidden','true');
+        showPoster();
+        return;
+      }
+
+      if(!hasWebGL){
+        setStatus('WebGL is unavailable in this browser. Explore the portfolio below for still imagery.');
+        canvas && canvas.setAttribute('aria-hidden','true');
+        showPoster();
+        return;
+      }
+
+      let babylonPromise;
+      let engine = null;
+      let scene = null;
+      let rig = null;
+      let isLooping = false;
+      let isVisible = false;
+      let isFullscreen = false;
+      let observer;
+
+      function loadScript(src){
+        return new Promise((resolve,reject)=>{
+          const existing = document.querySelector(`script[src="${src}"]`);
+          if(existing){
+            if(existing.dataset.loaded){
+              resolve();
+              return;
+            }
+            existing.addEventListener('load', ()=>resolve(), {once:true});
+            existing.addEventListener('error', reject, {once:true});
+            return;
+          }
+          const s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.addEventListener('load', ()=>{ s.dataset.loaded = 'true'; resolve(); }, {once:true});
+          s.addEventListener('error', reject, {once:true});
+          document.head.appendChild(s);
+        });
+      }
+
+      function ensureBabylon(){
+        if(babylonPromise) return babylonPromise;
+        babylonPromise = Promise.resolve().then(async ()=>{
+          await loadScript('https://cdn.babylonjs.com/babylon.js');
+          await loadScript('https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js');
+          if(!window.BABYLON) throw new Error('Babylon.js failed to load');
+          return window.BABYLON;
+        });
+        return babylonPromise;
+      }
+
+      function startLoop(){
+        if(engine && scene && !isLooping){
+          engine.runRenderLoop(()=>{ scene && scene.render(); });
+          isLooping = true;
+          const message = isFullscreen ? 'Fullscreen preview active — drag to orbit and scroll or pinch to zoom.' : 'Drag to orbit, scroll to zoom, or tap to explore.';
+          setStatus(message);
+        }
+      }
+
+      function stopLoop({silent=false}={}){
+        if(engine && isLooping){
+          engine.stopRenderLoop();
+          isLooping = false;
+          if(!silent && scene && !isFullscreen){
+            setStatus('Preview paused while off screen. Scroll back to resume.');
+          }
+        }
+      }
+
+      async function buildScene(){
+        if(scene) return scene;
+        const BABYLON = await ensureBabylon();
+        engine = new BABYLON.Engine(canvas, true, {preserveDrawingBuffer:true, stencil:true});
+        scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0.07,0.1,0.15,1);
+
+        const envTexture = BABYLON.CubeTexture.CreateFromPrefilteredData('https://assets.babylonjs.com/environments/studio.env', scene);
+        scene.environmentTexture = envTexture;
+        scene.createDefaultSkybox(envTexture, true, 80, 0.45);
+
+        const camera = new BABYLON.ArcRotateCamera('previewCamera', BABYLON.Tools.ToRadians(135), BABYLON.Tools.ToRadians(55), 14, new BABYLON.Vector3(0,2,0), scene);
+        camera.lowerBetaLimit = BABYLON.Tools.ToRadians(25);
+        camera.upperBetaLimit = BABYLON.Tools.ToRadians(80);
+        camera.lowerRadiusLimit = 6;
+        camera.upperRadiusLimit = 20;
+        camera.wheelDeltaPercentage = 0.02;
+        camera.panningSensibility = 900;
+        camera.useAutoRotationBehavior = false;
+        rig = new BABYLON.TransformNode('orbitRig', scene);
+        rig.rotation.y = BABYLON.Tools.ToRadians(-30);
+        camera.parent = rig;
+        camera.attachControl(canvas, true);
+
+        const pipeline = new BABYLON.DefaultRenderingPipeline('previewPipeline', true, scene, [camera]);
+        pipeline.samples = 4;
+        pipeline.imageProcessingEnabled = true;
+        pipeline.imageProcessing.toneMappingEnabled = true;
+        pipeline.imageProcessing.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
+        pipeline.imageProcessing.exposure = 1.05;
+        pipeline.imageProcessing.contrast = 1.08;
+        pipeline.grainEnabled = true;
+        pipeline.grain.intensity = 6;
+        pipeline.grain.animated = true;
+        pipeline.chromaticAberrationEnabled = true;
+        if(pipeline.chromaticAberration){
+          pipeline.chromaticAberration.aberrationAmount = 18;
+          pipeline.chromaticAberration.radialIntensity = 0.6;
+          pipeline.chromaticAberration.direction = new BABYLON.Vector2(0.25, 0.18);
+          pipeline.chromaticAberration.centerPosition = new BABYLON.Vector2(0.5, 0.5);
+        }
+        pipeline.ssaoEnabled = true;
+        if(pipeline.ssao || pipeline.ssao2){
+          const ao = pipeline.ssao || pipeline.ssao2;
+          ao.radius = 0.6;
+          ao.totalStrength = 0.45;
+          ao.area = 0.005;
+          ao.fallOff = 0.00001;
+          ao.base = 0.55;
+        }
+
+
+        const hemi = new BABYLON.HemisphericLight('fillLight', new BABYLON.Vector3(0.3,1,0.4), scene);
+        hemi.intensity = 0.6;
+        const sun = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(-0.6,-1,-0.5), scene);
+        sun.position = new BABYLON.Vector3(8,12,6);
+        sun.intensity = 1.2;
+        sun.shadowMinZ = 1;
+        sun.shadowMaxZ = 40;
+        const shadowGenerator = new BABYLON.ShadowGenerator(2048, sun);
+        shadowGenerator.useBlurExponentialShadowMap = true;
+        shadowGenerator.blurKernel = 16;
+
+        const ground = BABYLON.MeshBuilder.CreateGround('ground', {width:30, height:30}, scene);
+        const groundMat = new BABYLON.PBRMaterial('groundMat', scene);
+        groundMat.albedoColor = new BABYLON.Color3(0.16,0.19,0.23);
+        groundMat.roughness = 0.6;
+        groundMat.metallic = 0.05;
+        ground.material = groundMat;
+        ground.receiveShadows = true;
+
+        const plaza = BABYLON.MeshBuilder.CreateGround('plaza', {width:14, height:18}, scene);
+        plaza.position.y = 0.01;
+        const plazaMat = new BABYLON.PBRMaterial('plazaMat', scene);
+        plazaMat.albedoColor = new BABYLON.Color3(0.7,0.72,0.76);
+        plazaMat.roughness = 0.35;
+        plazaMat.metallic = 0.1;
+        plaza.material = plazaMat;
+        plaza.receiveShadows = true;
+
+        const podium = BABYLON.MeshBuilder.CreateBox('podium', {width:12, depth:8, height:2}, scene);
+        podium.position.y = 1;
+        const podiumMat = new BABYLON.PBRMaterial('podiumMat', scene);
+        podiumMat.albedoColor = new BABYLON.Color3(0.28,0.33,0.4);
+        podiumMat.roughness = 0.45;
+        podiumMat.metallic = 0.2;
+        podium.material = podiumMat;
+        shadowGenerator.addShadowCaster(podium);
+
+        const tower = BABYLON.MeshBuilder.CreateBox('tower', {width:10, depth:6, height:8}, scene);
+        tower.position.y = 5;
+        const towerMat = new BABYLON.PBRMaterial('towerMat', scene);
+        towerMat.albedoColor = new BABYLON.Color3(0.88,0.9,0.92);
+        towerMat.roughness = 0.25;
+        towerMat.metallic = 0.3;
+        tower.material = towerMat;
+        shadowGenerator.addShadowCaster(tower);
+
+        const glass = BABYLON.MeshBuilder.CreateBox('glassFacade', {width:9.6, depth:0.25, height:7.4}, scene);
+        glass.position = new BABYLON.Vector3(0,4.7,3.15);
+        const glassMat = new BABYLON.PBRMaterial('glassMat', scene);
+        glassMat.albedoColor = new BABYLON.Color3(0.66,0.8,0.94);
+        glassMat.indexOfRefraction = 1.5;
+        glassMat.alpha = 0.12;
+        glassMat.metallic = 0;
+        glassMat.roughness = 0.04;
+        glass.material = glassMat;
+
+        const canopy = BABYLON.MeshBuilder.CreateBox('canopy', {width:12, depth:4, height:0.4}, scene);
+        canopy.position = new BABYLON.Vector3(0,3.2,2.6);
+        const canopyMat = new BABYLON.PBRMaterial('canopyMat', scene);
+        canopyMat.albedoColor = new BABYLON.Color3(0.23,0.27,0.34);
+        canopyMat.metallic = 0.4;
+        canopyMat.roughness = 0.2;
+        canopy.material = canopyMat;
+        shadowGenerator.addShadowCaster(canopy);
+
+        const columnMat = new BABYLON.PBRMaterial('columnMat', scene);
+        columnMat.albedoColor = new BABYLON.Color3(0.82,0.84,0.86);
+        columnMat.roughness = 0.2;
+        columnMat.metallic = 0.15;
+        [-4.8,0,4.8].forEach((x,i)=>{
+          const column = BABYLON.MeshBuilder.CreateCylinder(`column${i}`, {diameter:0.6, height:3}, scene);
+          column.position = new BABYLON.Vector3(x,1.5,1);
+          column.material = columnMat;
+          shadowGenerator.addShadowCaster(column);
+        });
+
+        for(let i=0;i<3;i++){
+          const bench = BABYLON.MeshBuilder.CreateBox(`bench${i}`, {width:2.4, height:0.4, depth:0.9}, scene);
+          bench.position = new BABYLON.Vector3(-4 + i*4,0.25,-2.5);
+          const benchMat = new BABYLON.PBRMaterial(`benchMat${i}`, scene);
+          benchMat.albedoColor = new BABYLON.Color3(0.35,0.23,0.14);
+          benchMat.roughness = 0.5;
+          bench.material = benchMat;
+          shadowGenerator.addShadowCaster(bench);
+        }
+
+        const shrubMat = new BABYLON.PBRMaterial('shrubMat', scene);
+        shrubMat.albedoColor = new BABYLON.Color3(0.27,0.32,0.28);
+        shrubMat.roughness = 0.7;
+        for(let i=0;i<6;i++){
+          const shrub = BABYLON.MeshBuilder.CreateSphere(`shrub${i}`, {diameter:1.4, segments:6}, scene);
+          shrub.position = new BABYLON.Vector3(-5 + (i%3)*5,0.7,2.4 + Math.floor(i/3)*2);
+          shrub.material = shrubMat;
+          shadowGenerator.addShadowCaster(shrub);
+        }
+
+        const lightStrips = [];
+        for(let i=0;i<4;i++){
+          const strip = BABYLON.MeshBuilder.CreateBox(`strip${i}`, {width:10, height:0.05, depth:0.15}, scene);
+          strip.position = new BABYLON.Vector3(0,3.05,-1.5 + i*0.9);
+          const stripMat = new BABYLON.PBRMaterial(`stripMat${i}`, scene);
+          stripMat.albedoColor = new BABYLON.Color3(0.9,0.9,0.9);
+          stripMat.emissiveColor = new BABYLON.Color3(0.8,0.76,0.7);
+          stripMat.metallic = 0;
+          stripMat.roughness = 0.1;
+          strip.material = stripMat;
+          lightStrips.push(strip);
+        }
+
+        scene.onBeforeRenderObservable.add(()=>{
+          if(!engine) return;
+          const dt = engine.getDeltaTime();
+          if(rig){
+            rig.rotation.y += BABYLON.Tools.ToRadians(3) * dt / 1000;
+          }
+          const t = performance.now() * 0.001;
+          lightStrips.forEach((strip, idx)=>{
+            const mat = strip.material;
+            if(mat && mat.emissiveColor){
+              const intensity = 0.75 + 0.15 * Math.sin(t + idx*0.75);
+              mat.emissiveColor.copyFromFloats(intensity, intensity*0.95, intensity*0.88);
+            }
+          });
+        });
+
+        hidePoster();
+        canvas && canvas.removeAttribute('aria-hidden');
+        setStatus('Drag to orbit, scroll to zoom, or tap to explore.');
+        engine.resize();
+        return scene;
+      }
+
+      async function onVisible(){
+        if(scene){
+          startLoop();
+          return;
+        }
+        setStatus('Loading interactive preview…');
+        try{
+          await buildScene();
+          startLoop();
+        }catch(err){
+          console.error('Failed to initialise Babylon preview', err);
+          setStatus('Interactive preview failed to load. Explore the portfolio below while we resolve this.');
+          showPoster();
+          canvas && canvas.setAttribute('aria-hidden','true');
+        }
+      }
+
+      observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.target !== section) return;
+          isVisible = entry.isIntersecting;
+          if(isVisible){
+            onVisible();
+          }else if(!isFullscreen){
+            stopLoop();
+          }
+        });
+      },{threshold:0.35});
+      observer.observe(section);
+
+      document.addEventListener('visibilitychange', ()=>{
+        if(document.hidden){
+          stopLoop({silent:true});
+        }else if(isVisible){
+          startLoop();
+        }
+      });
+
+      window.addEventListener('resize', ()=>{ if(engine) engine.resize(); });
+
+      const updateFullscreenState = ()=>{
+        const fullscreenEl = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement || null;
+        isFullscreen = fullscreenEl === canvas || fullscreenEl === section;
+        if(engine){
+          engine.resize();
+        }
+        if(isFullscreen){
+          startLoop();
+          setStatus('Fullscreen preview active — drag to orbit and scroll or pinch to zoom.');
+        }else if(scene){
+          if(isVisible){
+            setStatus('Drag to orbit, scroll to zoom, or tap to explore.');
+          }else if(!document.hidden){
+            setStatus('Preview paused while off screen. Scroll back to resume.');
+          }
+        }
+      };
+
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+      document.addEventListener('msfullscreenchange', updateFullscreenState);
+
+      if(fullscreenBtn){
+        fullscreenBtn.addEventListener('click', ()=>{
+          const target = canvas || section;
+          const request = target.requestFullscreen || target.webkitRequestFullscreen || target.msRequestFullscreen;
+          if(request){
+            const result = request.call(target);
+            if(result && typeof result.catch === 'function'){
+              result.catch(()=>{});
+            }
+          }
+        });
+      }
+
+      window.addEventListener('beforeunload', ()=>{
+        stopLoop({silent:true});
+        observer && observer.disconnect();
+        if(scene){ scene.dispose(); }
+        if(engine){ engine.dispose(); }
+      });
+    })();
 
     // Reveal on view
     (function(){
